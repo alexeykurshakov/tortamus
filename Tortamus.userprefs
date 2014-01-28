@@ -1,0 +1,18 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Tortamus\Scripts\GameTortamus\GameTortamus.cs">
+    <Files>
+      <File FileName="Assets\Tortamus\Scripts\GameTortamus\GameTortamus.cs" Line="219" Column="40" />
+      <File FileName="Assets\Tortamus\Scripts\GameTortamus\RingDisk.cs" Line="57" Column="7" />
+      <File FileName="Assets\Tortamus\Scripts\GameTortamus\Ball.cs" Line="1" Column="1" />
+      <File FileName="Assets\Tortamus\Scripts\GameTortamus\Gear.cs" Line="1" Column="1" />
+      <File FileName="Assets\Tortamus\Scripts\GameTortamus\BallOutlet.cs" Line="1" Column="1" />
+      <File FileName="Assets\Tortamus\Scripts\GameTortamus\TurboButton.cs" Line="1" Column="1" />
+      <File FileName="Assets\Tortamus\Scripts\GameTortamus\InternalDisk.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

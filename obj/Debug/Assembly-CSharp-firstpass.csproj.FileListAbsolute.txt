@@ -1,0 +1,11 @@
+C:\_UnityProjects\Tortamus\Temp\bin\Debug\Assembly-CSharp-firstpass.dll
+C:\_UnityProjects\Tortamus\Temp\bin\Debug\Assembly-CSharp-firstpass.pdb
+C:\_UnityProjects\Tortamus\Temp\bin\Debug\UnityEditor.dll
+C:\_UnityProjects\Tortamus\Temp\bin\Debug\UnityEngine.dll
+C:\_UnityProjects\Tortamus\Temp\bin\Debug\Mono.Cecil.dll
+C:\_UnityProjects\Tortamus\Temp\bin\Debug\nunit.framework.dll
+C:\_UnityProjects\Tortamus\Temp\bin\Debug\Unity.DataContract.dll
+C:\_UnityProjects\Tortamus\Temp\bin\Debug\ICSharpCode.NRefactory.dll
+C:\_UnityProjects\Tortamus\obj\Debug\Assembly-CSharp-firstpass.csprojResolveAssemblyReference.cache
+C:\_UnityProjects\Tortamus\obj\Debug\Assembly-CSharp-firstpass.dll
+C:\_UnityProjects\Tortamus\obj\Debug\Assembly-CSharp-firstpass.pdb
