@@ -17,10 +17,14 @@ public class Ball : MonoBehaviour
 
 	private void Start()
 	{
-		_originalPlace = this.transform.localPosition;
+		if (this._originalPlace.magnitude == 0)
+			_originalPlace = this.transform.localPosition;
 	}
 
-    public bool IsPlugged { private set; get; }
+    public bool IsPlugged 
+	{ 
+		get { return _outlet != null; }
+	}
 
     public void PlugIn(BallOutlet outlet)
     {                
@@ -38,13 +42,16 @@ public class Ball : MonoBehaviour
 	{
 		this._outlet.Weight = 0f;
 		this._outlet = null;
+		this.GetComponent<SphereCollider>().enabled = true;
 		Throw();
 	}
 
-	public void Throw()
+	public void Throw(System.Object newOriginalPlace = null)
 	{
+        if (newOriginalPlace != null)
+			_originalPlace = (Vector3)newOriginalPlace;
+
 		this._isThrown = true;
-		this.GetComponent<SphereCollider>().enabled = true;
 	}
 
 	private void Update()

@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{C382D55B-3E55-73E6-5928-68CD62F1DC6D}</ProjectGuid>
+	<ProjectGuid>{55DA6403-B893-8EE1-E31A-54554835784A}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -129,9 +129,12 @@
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\BallOutlet.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\GameTortamus.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\Gear.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\GameTortamus\InputHelper.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\GameTortamus\InstrumentScale.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\InternalDisk.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\GameTortamus\Inventory.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\GameTortamus\PushButton.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\RingDisk.cs" />
-     <Compile Include="Assets\Tortamus\Scripts\GameTortamus\TurboButton.cs" />
      <None Include="Assets\Standard Assets\Projectors\Guidelines.txt" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Particle Shaders\Mobile Multiply Culled.shader" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Miscellaneous Shaders\Mobile Background.shader" />
@@ -170,9 +173,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{B65B36AF-5E5E-6B45-F8D5-8D5C8867F067}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
+      <Project>{026E7BB6-2790-BD0C-CB48-85A5A2ADD974}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-UnityScript-firstpass.unityproj">
-      <Project>{EADA1E17-6CF8-06DB-9843-873D8DE849E3}</Project>      <Name>Assembly-UnityScript-firstpass</Name>    </ProjectReference>
+      <Project>{510022D0-C9E4-5779-A2AA-D993B50787A2}</Project>      <Name>Assembly-UnityScript-firstpass</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

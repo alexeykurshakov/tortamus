@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TurboButton : MonoBehaviour 
+public class PushButton : MonoBehaviour 
 {
+	[SerializeField]
+	private Transform _outletsContainer;
+
 	private Color _inactiveColor = new Color(0.8f, 0.8f, 0.8f);
 
 	private bool _isActive;

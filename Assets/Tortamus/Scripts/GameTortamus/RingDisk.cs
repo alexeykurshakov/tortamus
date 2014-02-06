@@ -3,6 +3,22 @@ using System.Collections;
 
 public class RingDisk : MonoBehaviour 
 {
+    [SerializeField] private bool _isBoostEnable;
+
+    public bool IsReadyForBoost
+    {
+        get
+        {
+            if (this._isBoostEnable)
+            {
+				return Mathf.Abs(this.AngularSpeed) >= kMaxSpeed;
+            }
+            return false;
+        }
+    }
+
+	public const float kMaxSpeed = 6f;
+
 	private MeshCollider _meshCollider;
 
 	private BoxCollider _boxCollider;
@@ -14,6 +30,8 @@ public class RingDisk : MonoBehaviour
 	private Vector3 _handPosPrev;
 
 	private float _prevHandVelocity;
+
+	private float _prevDiskVelocity;
 
 	private Vector3 _handPos;
 
@@ -27,7 +45,7 @@ public class RingDisk : MonoBehaviour
 	{
 		get { return this._rigidBody.angularVelocity.z; }
 	}
-
+	
 	private float GetHandForce()
 	{
 		if (Vector3.Distance(_handPos, _handPosPrev) < 0.009f)
@@ -35,8 +53,7 @@ public class RingDisk : MonoBehaviour
 			if (Mathf.Abs(_rigidBody.angularVelocity.z) < 0.001f)
 				return 0;
 
-
-			return _rigidBody.angularVelocity.z > 0 ? -5 : 5;						
+			return _rigidBody.angularVelocity.z > 0 ? -3.5f : 3.5f;
 		}
 
 		var v1 = this.transform.position - _handPos;
@@ -49,22 +66,43 @@ public class RingDisk : MonoBehaviour
 		if (isCounterClockwise)
 			angle *= -1;
 
-		if (Mathf.Abs(_prevHandVelocity) < 0.0001f)
-		{
-			_prevHandVelocity = angle/_timer;
-			return 0;
-		}
-		else
+		angle /= 180f;
 		{
 			var handVelocity = angle/_timer;
-			var force = handVelocity * 0.005f;
-			force += ((handVelocity - _prevHandVelocity)/_timer) * 0.00005f;
+			var diskVelocity = this.AngularSpeed;
+			var absDiff = Mathf.Abs(diskVelocity - handVelocity);
+			var forceCoeffVel = 0f;
+			var sameDirection = false;
+			if ((handVelocity < 0 && diskVelocity > 0) || (handVelocity > 0 && diskVelocity < 0))
+			{
+				forceCoeffVel = 2 + absDiff/3;
+			}
+			else
+			{
+				sameDirection = true;
+				forceCoeffVel = (3.5f/(Mathf.Abs (diskVelocity)+1)) / (absDiff+0.01f);
+			}				
+
+			if (Mathf.Abs (_prevDiskVelocity) > 0.000001f)
+			{
+				var absDiskDiff = Mathf.Abs(_prevDiskVelocity - diskVelocity);			
+				if (sameDirection && absDiskDiff < 0.07f && Mathf.Abs(handVelocity) > Mathf.Abs(diskVelocity))
+				{
+					_forceCoeff += 0.4f;
+				}
+				else if (_forceCoeff > 0)
+				{
+					_forceCoeff -= 0.4f;
+				}			
+			}
+
 			_prevHandVelocity = handVelocity;
-			return force * _forceCoeff;
+			_prevDiskVelocity = diskVelocity;
+			return (handVelocity * (forceCoeffVel + _forceCoeff)) * (1 + (sameDirection ? diskVelocity * Inventory.BallUsesCount/6f: 0));
 		}
 	}
 
-	public void SetHand(Vector3 handPos, float force)
+	public void SetHand(Vector3 handPos)
 	{
 		_handPos = new Vector3(handPos.x, handPos.y, this.transform.position.z);
 		_handPosPrev = _handPos;
@@ -72,10 +110,10 @@ public class RingDisk : MonoBehaviour
 
 		_timer = 0f;
 		_prevHandVelocity = 0f;
+		_prevDiskVelocity = 0f;
+		_forceCoeff = 0f;
 		_boxCollider.enabled = true;
 		_meshCollider.enabled = false;
-
-		_forceCoeff = force;
 	}
 
 	public void MoveHand(Vector3 handPos)
@@ -90,6 +128,10 @@ public class RingDisk : MonoBehaviour
 		_isHandSet = false;
 	}
 
+    public void Boost()
+    {        
+    }
+
 	private void Update () 
 	{
 		_timer += Time.deltaTime;
@@ -98,10 +140,10 @@ public class RingDisk : MonoBehaviour
 			_force.torque = new Vector3();
 			return;
 		}
-			
+
 		_force.torque = new Vector3(0, 0, GetHandForce() * (this.transform.position - _handPos).magnitude);
 		_handPosPrev = _handPos;
-		_timer = 0f;
+		_timer = 0f;				      
 	}
 
 	private void Start () 

@@ -1,41 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting;
 using UnityEngine;
 using System.Collections;
 
 public class GameTortamus : MonoBehaviour
 {  
-    [SerializeField]
-    private Gear _mainGear;	   
+    [SerializeField] private Gear _mainGear;	   
 
-	[SerializeField]
-	private Gear _gear;
+	[SerializeField] private InstrumentScale _instrumentScale;
 
-    [SerializeField]
-    private RingDisk _ringDisk;
+    [SerializeField] private Inventory _inventory;
 
-	[SerializeField]
-	private TurboButton _turboButton;
+    [SerializeField] private RingDisk _ringDisk;
 
-    [SerializeField]
-    private InternalDisk _internalDisk;
-
-	private Ball _currentDragBall;
-
-	private const float kGearTurboMinLimitSpeed = 1.5f;
-
-	private const float kTimeForTurboActivate = 2f;
-
-	private float _turboTimer;
-
-	private float _forceForTorque = 1f;
+	[SerializeField] private PushButton _pushButton;    
 
 	private enum States
 	{
 		WaitForInput,
-		RingCall,
-		BallDrag,
-		TurboOn,
+		OrbitRotate,
+		UseInventory,
+		Cinematic,
 		OnStart = WaitForInput,
 	}
 
@@ -50,84 +36,35 @@ public class GameTortamus : MonoBehaviour
 	}
 	   
     private void Update()
-    {
-		var delta = Time.deltaTime;
-
-		if (_state != States.TurboOn)
-		{
-			_mainGear.AngularSpeed = _ringDisk.AngularSpeed/4f;
-			var absGearSpeed = Mathf.Abs(_mainGear.AngularSpeed);
-			if (!_turboButton.IsActive)
-			{
-				if (absGearSpeed > kGearTurboMinLimitSpeed)
-				{
-					if ( (_turboTimer += delta) > kTimeForTurboActivate)			
-						_turboButton.IsActive = true;
-				}
-				else if (_turboTimer > 0)
-				{
-					_turboTimer -= delta;
-				}
-			}
-			else if (absGearSpeed < kGearTurboMinLimitSpeed * 0.75f)
-			{
-				_turboButton.IsActive = false;
-				_turboTimer = 0f;
-			}
-		}
+    {		
+		var delta = Time.deltaTime;	
+		_instrumentScale.Value0_100 = (int)(100f * (Math.Abs(_ringDisk.AngularSpeed) / RingDisk.kMaxSpeed));
 
 		switch (_state)
 		{
 		case States.WaitForInput:
-			WaitForInputProcess(delta);
+			WaitForInputProcess();
 			break;
 
-		case States.RingCall:
-			RingCallProcess(delta);
+		case States.OrbitRotate:
+			OrbitRotateProcess();
 			break;
 
-		case States.BallDrag:
-			BallDragProcess(delta);
+		case States.UseInventory:
+			InventoryUseProcess(delta);
 			break;
 
-		case States.TurboOn:
-			_gear.AngularSpeed = -_mainGear.AngularSpeed;
-			break;
+		case States.Cinematic:
+		    return;
 		}
+		
+        _mainGear.AngularSpeed = _ringDisk.AngularSpeed / 4f;
+		_pushButton.IsActive = _ringDisk.IsReadyForBoost;        
     }
 
-	private System.Object GetTouchBeganRay()
+	private void WaitForInputProcess()
 	{
-		System.Object rayRef = null;
-		if (Input.touchCount > 0)
-		{
-			foreach (Touch touch in Input.touches)
-			{
-				if (touch.phase == TouchPhase.Began)
-				{
-					rayRef = Camera.main.ScreenPointToRay(touch.position);
-					break;
-				}
-			}
-		}
-		else if (Input.GetMouseButtonDown(0))
-		{
-			rayRef = Camera.main.ScreenPointToRay(Input.mousePosition);
-		}
-		return rayRef;
-	}
-
-	private Ray GetTouchRay()
-	{
-		if (Input.touchCount < 0)
-			return Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-
-		return Camera.main.ScreenPointToRay(Input.mousePosition);
-	}
-
-	private void WaitForInputProcess(float delta)
-	{
-		System.Object rayRef = GetTouchBeganRay();
+		System.Object rayRef = InputHelper.GetTouchBeganRay();
 		if (rayRef == null)
 			return;	
 
@@ -144,31 +81,27 @@ public class GameTortamus : MonoBehaviour
 				hit.point.x,
 				hit.point.y,
 				hit.point.z
-			), _forceForTorque);		
-			State = States.RingCall;
+			));            
+			State = States.OrbitRotate;
 			return;
 		}	
 
-		if (hitObject == this._turboButton.gameObject)
+		if (hitObject == this._pushButton.gameObject)
 		{
-			if (_turboButton.IsActive)
-			{
-				_gear.transform.Rotate(0,0,-_mainGear.transform.eulerAngles.z);
-				_gear.gameObject.SetActive(true);
-				State = States.TurboOn;
+			if (_pushButton.IsActive)
+			{			
+				State = States.Cinematic;
+                _ringDisk.Boost();
+                _mainGear.TransferSpin();			    
 			}
 			return;
-		}	
+		}
 
-		var ball = hitObject.GetComponent<Ball>();
-		if (ball.IsPlugged)
-			return;
-
-		_currentDragBall = ball;
-		State = States.BallDrag;	
+        if (_inventory.Touch(hitObject))
+		    State = States.UseInventory;	
 	}
 
-	private void RingCallProcess(float delta)
+	private void OrbitRotateProcess()
 	{
 		if (Input.GetMouseButtonUp(0))
 		{
@@ -178,7 +111,7 @@ public class GameTortamus : MonoBehaviour
 		}
 
 		RaycastHit hit;
-		if (!Physics.Raycast (GetTouchRay(), out hit, 
+		if (!Physics.Raycast (InputHelper.GetTouchRay(), out hit, 
 		                      Mathf.Infinity, 1 << LayerMask.NameToLayer("UserInteractive")))
 		{
 			_ringDisk.RemoveHand();
@@ -199,35 +132,12 @@ public class GameTortamus : MonoBehaviour
 		));
 	}
 
-	private void BallDragProcess(float delta)
+	private void InventoryUseProcess(float delta)
 	{
-		var ray = GetTouchRay();
-		if (Input.GetMouseButtonUp(0))
-		{
-			RaycastHit hit;
-			if (!Physics.Raycast (ray, out hit, 
-			                     Mathf.Infinity, 1 << LayerMask.NameToLayer("Outlets")))
-			{
-				_currentDragBall.Throw();
-			}
-			else
-			{
-				var outlet = hit.collider.gameObject.GetComponent<BallOutlet>();
-				if (outlet.IsFree)
-				{
-					_currentDragBall.PlugIn(outlet);
-					_forceForTorque = (_forceForTorque > 1 ? _forceForTorque : 0) + _currentDragBall.Weight * 5;
-				}
-				else
-				{
-					_currentDragBall.Throw();
-				}
-			}				
-			State = States.WaitForInput;
-			_currentDragBall = null;
-			return;
-		}
-		_currentDragBall.Drag(ray.origin);
+	    if (!_inventory.Process(delta))
+	    {
+            State = States.WaitForInput;
+	    }		
 	}
 }
  
