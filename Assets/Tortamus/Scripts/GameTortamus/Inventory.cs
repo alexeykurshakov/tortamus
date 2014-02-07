@@ -5,6 +5,8 @@ using System.Collections;
 
 public class Inventory : MonoBehaviour 
 {
+    public static Inventory Instance { private set; get; }
+
     private readonly List<Ball> _balls = new List<Ball>(); 
 
     private Ball _currentDragBall;
@@ -13,10 +15,17 @@ public class Inventory : MonoBehaviour
 
 	private Vector3 _place2 = new Vector3(-0.7272438f, 1.039437f, -75.01415f);
 
-	public static int BallUsesCount;
+    public List<Ball> PluggedBalls
+    {
+        get
+        {
+            return _balls.FindAll(b => b.IsPlugged);
+        }
+    }
 
     private void Start()
     {
+        Instance = this;
         foreach (Transform child in transform)
         {
             _balls.Add(child.gameObject.GetComponent<Ball>());
@@ -53,8 +62,7 @@ public class Inventory : MonoBehaviour
                 var outlet = hit.collider.gameObject.GetComponent<BallOutlet>();
                 if (outlet.IsFree)
                 {
-                    _currentDragBall.PlugIn(outlet);
-					BallUsesCount++;
+                    _currentDragBall.PlugIn(outlet);				
                     ShiftBalls();
                 }
                 else

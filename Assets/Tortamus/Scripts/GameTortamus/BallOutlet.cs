@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Helpers;
 using System.Collections;
 
 public class BallOutlet : MonoBehaviour
@@ -10,10 +11,7 @@ public class BallOutlet : MonoBehaviour
 
 	public bool IsFree
 	{
-		get
-		{
-			return this.Weight < 0.05f;
-		}
+		get { return this.Weight.IsEqual(0); }
 	}
 
 	public Vector3 Scale
@@ -31,6 +29,11 @@ public class BallOutlet : MonoBehaviour
 		get { return this._rigidBody.mass; }
 		set 
 		{
+			if (value.IsEqual(0))
+			{
+				this._rigidBody.mass = 0.000001f;
+				return;
+			}
 			this._rigidBody.mass = value;
 		}
 	}

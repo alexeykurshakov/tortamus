@@ -5,7 +5,16 @@ using System.Collections;
 public class Ball : MonoBehaviour
 {
 	[SerializeField] private float _weight;   
-	public float Weight { get { return _weight;} }
+	public float Weight 
+	{ 
+		get { return _weight;} 
+		set 
+		{ 
+			_weight = value; 
+			if (this._outlet != null)
+				this._outlet.Weight = _weight;
+		}
+	}
 
 	private Vector3 _originalPlace;
 
@@ -28,7 +37,7 @@ public class Ball : MonoBehaviour
 
     public void PlugIn(BallOutlet outlet)
     {                
-		if (this._outlet)
+		if (this._outlet != null)
 			throw new InvalidOperationException("Ball is yet plugIn");
 
 		this.GetComponent<SphereCollider>().enabled = false;

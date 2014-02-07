@@ -135,6 +135,7 @@
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\Inventory.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\PushButton.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\RingDisk.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\Helpers\FloatHelper.cs" />
      <None Include="Assets\Standard Assets\Projectors\Guidelines.txt" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Particle Shaders\Mobile Multiply Culled.shader" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Miscellaneous Shaders\Mobile Background.shader" />

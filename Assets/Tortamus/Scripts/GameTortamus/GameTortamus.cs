@@ -113,19 +113,19 @@ public class GameTortamus : MonoBehaviour
 		RaycastHit hit;
 		if (!Physics.Raycast (InputHelper.GetTouchRay(), out hit, 
 		                      Mathf.Infinity, 1 << LayerMask.NameToLayer("UserInteractive")))
-		{
-			_ringDisk.RemoveHand();
+		{            
+			_ringDisk.RemoveHand(false);
 			return;
 		}
 
 		var hitObject = hit.collider.gameObject;
 		if (hitObject != this._ringDisk.gameObject)
-		{
-			_ringDisk.RemoveHand();
+		{         
+            _ringDisk.RemoveHand(false);
 			return;
 		}
 
-		this._ringDisk.MoveHand(new Vector3(
+        this._ringDisk.SetHand(new Vector3(
 			hit.point.x,
 			hit.point.y,
 			hit.point.z
