@@ -19,7 +19,7 @@
 	<DebugType>full</DebugType>
 	<Optimize>false</Optimize>
 	<OutputPath>Temp\bin\Debug\</OutputPath>
-	<DefineConstants>DEBUG;TRACE;UNITY_ANDROID;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;UNITY_ANDROID_API;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_3;UNITY_4_3;DEVELOPMENT_BUILD;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE</DefineConstants>
+	<DefineConstants>DEBUG;TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_3;UNITY_4_3;DEVELOPMENT_BUILD;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE</DefineConstants>
 	<ErrorReport>prompt</ErrorReport>
 	<WarningLevel>4</WarningLevel>
 	<NoWarn>0169</NoWarn>
@@ -125,17 +125,44 @@
      <Compile Include="Assets\TK2DROOT\tk2d_demo\tk2dDemoCameraController.cs" />
      <Compile Include="Assets\TK2DROOT\tk2d_demo\tk2dDemoReloadController.cs" />
      <Compile Include="Assets\TK2DROOT\tk2d_demo\tk2dDemoRuntimeSpriteController.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\GUI\UIMenu.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\GUI\UIProfile.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\GUI\UISettings.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\Ball.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\BallOutlet.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\GameTortamus\GameConfig.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\GameTortamus.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\Gear.cs" />
-     <Compile Include="Assets\Tortamus\Scripts\GameTortamus\InputHelper.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\GameTortamus\HandModel.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\InstrumentScale.cs" />
-     <Compile Include="Assets\Tortamus\Scripts\GameTortamus\InternalDisk.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\Inventory.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\PushButton.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameTortamus\RingDisk.cs" />
      <Compile Include="Assets\Tortamus\Scripts\Helpers\FloatHelper.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\About.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\DataReaderProvider.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\DataWriterProvider.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\EcmaScriptIdentifier.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\EcmaScriptWriter.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\IDataReader.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\IDataWriter.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\IJsonSerializable.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\JsonDataReader.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\JsonDataWriter.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\JsonIgnoreAttribute.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\JsonMemberAttribute.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\JsonNameAttribute.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\JsonOptInAttribute.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\JsonReader.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\JsonReaderSettings.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\JsonSerializationException.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\JsonSpecifiedPropertyAttribute.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\JsonToken.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\JsonWriter.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\JsonWriterSettings.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\TypeCoercionUtility.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\XmlDataReader.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\JsonFX\XmlDataWriter.cs" />
      <None Include="Assets\Standard Assets\Projectors\Guidelines.txt" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Particle Shaders\Mobile Multiply Culled.shader" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Miscellaneous Shaders\Mobile Background.shader" />
@@ -150,6 +177,7 @@
      <None Include="Assets\TK2DROOT\tk2d\Shaders\PremulVertexColor.shader" />
      <None Include="Assets\TK2DROOT\tk2d_demo\Credits.txt" />
      <None Include="Assets\TK2DROOT\tk2d\Shaders\goodies\PackedTextMesh.shader" />
+     <None Include="Assets\Tortamus\Scripts\JsonFX\Readme.txt" />
      <None Include="Assets\TK2DROOT\tk2d\Shaders\Blend2TexVertexColor.shader" />
      <None Include="Assets\Standard Assets\Skyboxes\_skybox info.txt" />
      <None Include="Assets\TK2DROOT\tk2dUI\Shaders\DepthMaskSolid.shader" />
@@ -169,6 +197,7 @@
      <None Include="Assets\TK2DROOT\tk2d\Shaders\LitBlendVertexColor.shader" />
      <None Include="Assets\TK2DROOT\tk2dUI_demo\Assets\Dark\Fonts\Nunito16.fnt" />
      <None Include="Assets\TK2DROOT\tk2dUI_demo\Assets\Dark\Fonts\Nunito32.fnt" />
+     <None Include="Assets\Tortamus\Scripts\JsonFX\License.txt" />
      <None Include="Assets\TK2DROOT\tk2d\Shaders\AdditiveVertexColor.shader" />
      <None Include="Assets\TK2DROOT\tk2d_demo\democameradata\source\democamerafont.fnt" />
  <Reference Include="Assembly-UnityScript-firstpass">

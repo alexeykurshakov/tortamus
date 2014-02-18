@@ -1,12 +1,8 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Tortamus\Scripts\GameTortamus\RingDisk.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Tortamus\Scripts\GameTortamus\GameTortamus.cs">
     <Files>
-      <File FileName="Assets\Tortamus\Scripts\GameTortamus\GameTortamus.cs" Line="131" Column="15" />
-      <File FileName="Assets\Tortamus\Scripts\GameTortamus\BallOutlet.cs" Line="16" Column="2" />
-      <File FileName="Assets\Tortamus\Scripts\GameTortamus\RingDisk.cs" Line="115" Column="12" />
-      <File FileName="Assets\Tortamus\Scripts\Helpers\FloatHelper.cs" Line="20" Column="17" />
-      <File FileName="Assets\Tortamus\Scripts\GameTortamus\Ball.cs" Line="20" Column="2" />
+      <File FileName="Assets\Tortamus\Scripts\GameTortamus\GameTortamus.cs" Line="12" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -27,14 +27,9 @@ public class BallOutlet : MonoBehaviour
 	public float Weight
 	{
 		get { return this._rigidBody.mass; }
-		set 
+		set
 		{
-			if (value.IsEqual(0))
-			{
-				this._rigidBody.mass = 0.000001f;
-				return;
-			}
-			this._rigidBody.mass = value;
+		    this._rigidBody.mass = value.MassCorrect();			            
 		}
 	}
 

@@ -15,10 +15,9 @@ namespace Helpers
 			return Mathf.Abs(f1 - f2) < f3; 
 		}
 
-		public static bool IsAbsLess(this float f1, float f2)
-		{
-			return false;
-			//return (Mathf.Abs(f1) < 
-		}
+        public static float MassCorrect(this float f1)
+        {
+            return f1.IsEqual(0) ? 0.000001f : f1;            
+        }
     }
 }

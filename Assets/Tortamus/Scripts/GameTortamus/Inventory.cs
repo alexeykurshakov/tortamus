@@ -2,25 +2,23 @@
 using System.Linq;
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class Inventory : MonoBehaviour 
 {
     public static Inventory Instance { private set; get; }
 
+	public event EventHandler<EventArgs> BallPlugged;
+
     private readonly List<Ball> _balls = new List<Ball>(); 
 
     private Ball _currentDragBall;
 
-	private Vector3 _place1 = new Vector3(-0.5653334f, 1.039437f, -75.01415f);
-
-	private Vector3 _place2 = new Vector3(-0.7272438f, 1.039437f, -75.01415f);
+    private HandModel _handModel;
 
     public List<Ball> PluggedBalls
     {
-        get
-        {
-            return _balls.FindAll(b => b.IsPlugged);
-        }
+        get { return _balls.FindAll (b => b.IsPlugged); }
     }
 
     private void Start()
@@ -28,16 +26,17 @@ public class Inventory : MonoBehaviour
         Instance = this;
         foreach (Transform child in transform)
         {
-            _balls.Add(child.gameObject.GetComponent<Ball>());
-            if (child.localPosition.x < -0.8f)
-			{
-				child.gameObject.SetActive(false);
-			}
+			var ball = child.gameObject.GetComponent<Ball>();
+			if (ball == null)			
+				continue;
+
+            _balls.Add(ball);         
         }	
    	}
 
-    public bool Touch(GameObject hitObject)
+    public bool Touch(GameObject hitObject, HandModel handModel)
     {
+        _handModel = handModel;
         var ball = hitObject.GetComponent<Ball>();
         if (ball.IsPlugged)
             return false;
@@ -46,13 +45,20 @@ public class Inventory : MonoBehaviour
         return true;
     }
 
+	private void OnBallPlugged()
+	{
+		if (BallPlugged != null)
+		{
+			BallPlugged(this, EventArgs.Empty);
+		}
+	}
+
     public bool Process(float delta)
     {
-        var ray = InputHelper.GetTouchRay();
-        if (Input.GetMouseButtonUp(0))
+        if (!_handModel.IsPressed)
         {
             RaycastHit hit;
-            if (!Physics.Raycast(ray, out hit,
+            if (!Physics.Raycast(_handModel.GetRay(), out hit,
                                  Mathf.Infinity, 1 << LayerMask.NameToLayer("Outlets")))
             {
                 _currentDragBall.Throw();
@@ -62,38 +68,18 @@ public class Inventory : MonoBehaviour
                 var outlet = hit.collider.gameObject.GetComponent<BallOutlet>();
                 if (outlet.IsFree)
                 {
-                    _currentDragBall.PlugIn(outlet);				
-                    ShiftBalls();
+                    _currentDragBall.PlugIn(outlet);
+					OnBallPlugged();
                 }
                 else
                 {
                     _currentDragBall.Throw();
                 }
-            }            
+            }
             _currentDragBall = null;
             return false;
         }
-        _currentDragBall.Drag(ray.origin);
-        return true;
-    }
-
-    private void ShiftBalls()
-    {
-        var notPluggedBalls = _balls.FindAll(b => !b.IsPlugged);
-        if (notPluggedBalls.Any())
-        {
-            var firstNoActiveBall = notPluggedBalls.Find(b => !b.gameObject.activeSelf);		
-            if (firstNoActiveBall != null)
-            {			
-				firstNoActiveBall.gameObject.SetActive(true);
-				firstNoActiveBall.Throw(_place2);             
-
-				var yetActiveBall = notPluggedBalls.Find(b => b.gameObject.activeSelf);
-				if (yetActiveBall !=null && yetActiveBall.transform.localPosition.x < -0.6f)
-				{
-					yetActiveBall.Throw(_place1);
-				}
-            }           
-        }
+        _currentDragBall.Drag(_handModel.GetRay().origin);
+        return true;            
     }
 }

@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Ball : MonoBehaviour
 {
-	[SerializeField] private float _weight;   
+	private float _weight;   
 	public float Weight 
 	{ 
 		get { return _weight;} 
@@ -24,8 +24,20 @@ public class Ball : MonoBehaviour
 
 	private bool _isThrown;
 
+    private void Awake()
+    {      
+		OnConfigChanged(GameConfig.Instance, EventArgs.Empty);
+        GameConfig.Changed += OnConfigChanged;        
+    }
+
+    private void OnConfigChanged(object sender, EventArgs args)
+    {
+        var config = (GameConfig)sender;
+        this.Weight = config.Масса_Шара;
+    }
+
 	private void Start()
-	{
+	{        
 		if (this._originalPlace.magnitude == 0)
 			_originalPlace = this.transform.localPosition;
 	}

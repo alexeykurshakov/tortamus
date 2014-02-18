@@ -14,12 +14,14 @@ public class GameTortamus : MonoBehaviour
 
     [SerializeField] private RingDisk _ringDisk;
 
-	[SerializeField] private PushButton _pushButton;    
+	[SerializeField] private PushButton _pushButton;
+
+    [SerializeField] private HandModel _handModel;    
 
 	private enum States
 	{
 		WaitForInput,
-		OrbitRotate,
+		DiskRotate,
 		UseInventory,
 		Cinematic,
 		OnStart = WaitForInput,
@@ -37,54 +39,54 @@ public class GameTortamus : MonoBehaviour
 	   
     private void Update()
     {		
-		var delta = Time.deltaTime;	
-		_instrumentScale.Value0_100 = (int)(100f * (Math.Abs(_ringDisk.AngularSpeed) / RingDisk.kMaxSpeed));
+		var delta = Time.deltaTime;
+        _instrumentScale.Speed0_100 = _ringDisk.Speed0_100;
+		_instrumentScale.Temp0_100 = _ringDisk.Temp0_100;
 
-		switch (_state)
-		{
-		case States.WaitForInput:
-			WaitForInputProcess();
-			break;
+        switch (_state)
+        {
+            case States.WaitForInput:
+                WaitForInputProcess();
+                break;
 
-		case States.OrbitRotate:
-			OrbitRotateProcess();
-			break;
+            case States.DiskRotate:                
+                break;
 
-		case States.UseInventory:
-			InventoryUseProcess(delta);
-			break;
+            case States.UseInventory:
+                InventoryUseProcess(delta);
+                break;
 
-		case States.Cinematic:
-		    return;
-		}
+            case States.Cinematic:
+                return;
+        }
 		
         _mainGear.AngularSpeed = _ringDisk.AngularSpeed / 4f;
-		_pushButton.IsActive = _ringDisk.IsReadyForBoost;        
+		if (_ringDisk.IsReadyForBoost)
+		{
+            _pushButton.IsActive = true;		
+		}			
     }
 
 	private void WaitForInputProcess()
-	{
-		System.Object rayRef = InputHelper.GetTouchBeganRay();
-		if (rayRef == null)
-			return;	
+	{	    
+        if (!_handModel.IsPressed)
+	        return;
+        RaycastHit hit;
 
-		RaycastHit hit;
-		if (!Physics.Raycast ((Ray)rayRef, out hit, 
+        if (!Physics.Raycast(_handModel.GetRay(), out hit, 
 		                      Mathf.Infinity, 1 << LayerMask.NameToLayer("UserInteractive")))
-			return;
-			
+            return;					        
 
 		var hitObject = hit.collider.gameObject;
 		if (hitObject == this._ringDisk.gameObject)
 		{
-			this._ringDisk.SetHand(new Vector3(
-				hit.point.x,
-				hit.point.y,
-				hit.point.z
-			));            
-			State = States.OrbitRotate;
+            this._ringDisk.SetHand(_handModel);			
+			State = States.DiskRotate;
 			return;
-		}	
+		}
+
+        if (_handModel.IsRetained)
+	        return;    
 
 		if (hitObject == this._pushButton.gameObject)
 		{
@@ -97,39 +99,8 @@ public class GameTortamus : MonoBehaviour
 			return;
 		}
 
-        if (_inventory.Touch(hitObject))
+        if (_inventory.Touch(hitObject, _handModel))
 		    State = States.UseInventory;	
-	}
-
-	private void OrbitRotateProcess()
-	{
-		if (Input.GetMouseButtonUp(0))
-		{
-			State = States.WaitForInput;
-			_ringDisk.RemoveHand();
-			return;
-		}
-
-		RaycastHit hit;
-		if (!Physics.Raycast (InputHelper.GetTouchRay(), out hit, 
-		                      Mathf.Infinity, 1 << LayerMask.NameToLayer("UserInteractive")))
-		{            
-			_ringDisk.RemoveHand(false);
-			return;
-		}
-
-		var hitObject = hit.collider.gameObject;
-		if (hitObject != this._ringDisk.gameObject)
-		{         
-            _ringDisk.RemoveHand(false);
-			return;
-		}
-
-        this._ringDisk.SetHand(new Vector3(
-			hit.point.x,
-			hit.point.y,
-			hit.point.z
-		));
 	}
 
 	private void InventoryUseProcess(float delta)
@@ -139,5 +110,10 @@ public class GameTortamus : MonoBehaviour
             State = States.WaitForInput;
 	    }		
 	}
+
+    private void Start()
+    {
+        _ringDisk.HandReleased += (sender, args) => this.State = States.WaitForInput;
+    }
 }
  

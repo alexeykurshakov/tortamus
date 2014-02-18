@@ -1,24 +1,34 @@
-﻿using Helpers;
+﻿using System;
+using Helpers;
 using UnityEngine;
 using System.Collections;
 
-public class RingDisk : MonoBehaviour 
+public class RingDisk : MonoBehaviour
 {
-    [SerializeField] private bool _isBoostEnable;
+    public event EventHandler<EventArgs> HandReleased;
+
+    private float _maxTemperature;
+
+    private float _temperature;
+
+	private bool _isBoost;
 
     public bool IsReadyForBoost
     {
-        get
-        {
-            if (this._isBoostEnable)
-            {
-				return Mathf.Abs(this.AngularSpeed) >= kMaxSpeed;
-            }
-            return false;
-        }
+        get { return _temperature >= _maxTemperature; }
+    }
+ 
+    public float MaxSpeed { get; private set; }    
+
+    public int Speed0_100
+    {
+        get { return (int)(100f * (Math.Abs(this.AngularSpeed) / this.MaxSpeed)); }
     }
 
-	public const float kMaxSpeed = 6f;
+    public int Temp0_100
+    {
+        get { return (int)(100f * (this._temperature) / this._maxTemperature); }
+    }
 
 	private MeshCollider _meshCollider;
 
@@ -27,172 +37,198 @@ public class RingDisk : MonoBehaviour
 	private ConstantForce _force;
 
 	private Rigidbody _rigidBody;
-	
-    private float _timer;
 
-	private float _prevHandVelocity;
+    private HandModel _handModel;
 
-	private float _prevDiskVelocity;
+    private float _delta;
+
+    private float _torqueEnergy;
+
+    private float _torqueEnergyExtra; 
 
     private Vector3 _handPosPrev;
 
-	private Vector3 _handPos;
-
-	private bool _isHandSet;			
-
-	private bool _isAccelartionCouldApply;
-
-	private float _torqueAcc;
+    private Vector3 _handPos;	          	
 
 	public float AngularSpeed
 	{
 		get { return this._rigidBody.angularVelocity.z; }
 	}
 
-	private float PassiveDeceleration()
+	private void PassiveDeceleration()
 	{
 		// 1. If speed of the disk is low, return 0
 		if (_rigidBody.angularVelocity.z.IsEqual(0, 0.001f))
-			return 0;
-
-		// 2. Otherwise return opposite sign to angular speed force
-		var res = 4.5f + Inventory.Instance.PluggedBalls.Count * 0.5f;
-		return res * (_rigidBody.angularVelocity.z > 0 ? -1 : 1);
-	}
-	
-	private float CalcForceForTorque()
-	{
-		// If we just keep our hand on the disk, but don't move
-		if (Vector3.Distance(_handPos, _handPosPrev) < 0.0025f)
 		{
-			// Debug.Log ("PassiveDeceleration");
-			return PassiveDeceleration();
+			_torqueEnergy = 0f;
+			return;
 		}
 
-		var v1 = this.transform.position - _handPos;
+		// 2. Otherwise return opposite sign to angular speed force		
+		_torqueEnergy = GameConfig.Instance.Коэф_Трения_Покоя * (_rigidBody.angularVelocity.z > 0 ? -1 : 1);
+	}
+
+	private const float kVelocityConvertCoeff = 360f/Mathf.PI;
+	
+	private void CalcForceForTorque()
+	{
+	    var gameConfig = GameConfig.Instance;	    
+
+		// If we just keep our hand on the disk, but don't move
+	    if (Vector3.Distance(_handPos, _handPosPrev) < 0.0025f)
+	    {
+	        PassiveDeceleration();
+	        return;
+	    }
+
+	    var v1 = this.transform.position - _handPos;
 		var v2 = this.transform.position - _handPosPrev;
 
-		var angle = Vector3.Angle(v1, v2)/ 180f;
+		var angle = Vector3.Angle(v1, v2);	    
 
 		var isCounterClockwise = Vector3.Cross(v1, v2).z > 0;
-		if (isCounterClockwise)
-			angle *= -1;	
+	    if (isCounterClockwise)
+            angle *= -1;	    
 
-		// Count of balls that plugged into disk
-		var pluggedCount = Inventory.Instance.PluggedBalls.Count;
-
-		// The angular speed of our hand
-		var handVelocity = angle/_timer;
+	    // The angular speed of our hand
+		var handVelocity = angle/(_delta * kVelocityConvertCoeff);
 
 		// The angular speed of the disk
 		var diskVelocity = this.AngularSpeed;
 
-		// Is hand rotate for the same the direction as the disk
-		var isSameDirection = diskVelocity.IsEqual(0) || handVelocity.IsSameSign(diskVelocity);	
-
-		// Difference in angular speed between hand and disk
-		var speedDiff = Mathf.Abs(diskVelocity - handVelocity);	
-
-		// Current accelartion
-		var accelaration = (handVelocity - _prevHandVelocity)/_timer;
-		_prevHandVelocity = handVelocity;
-				
-		if (isSameDirection) 
+		// Velocity diff
+		var diffVelocity = handVelocity - diskVelocity;
+		if (handVelocity.IsSameSign(diskVelocity) && !handVelocity.IsSameSign(diffVelocity))
 		{
-			// Increase speed of the disk
-			var step = 0.3f * Mathf.Sign(handVelocity);	
-			var diskAccelartion = Mathf.Abs (diskVelocity - _prevDiskVelocity)/_timer;
-			var etalonAccelartion = 0.8f * kMaxSpeed/(20-pluggedCount);
-
-			if (diskAccelartion < etalonAccelartion)
-		    {
-		        _torqueAcc += step;
-		    }
-		    else
-		    {			
-		        _torqueAcc -= step/4;
-		        if (!_torqueAcc.IsSameSign(handVelocity))
-		        {
-		            _torqueAcc = 0;
-		        }
-		    }
-
-			if (_isAccelartionCouldApply)
-			{
-				if (accelaration.IsSameSign(handVelocity))
-				{
-					_torqueAcc += (0.25f * Mathf.Sign(handVelocity)) * (Mathf.Abs (diskVelocity)/2f+5+pluggedCount/2f);
-				}
-				else
-				{
-					_isAccelartionCouldApply = false;
-				}
-			}
+			_torqueEnergy = 0;
 		}
 		else
 		{
-			_torqueAcc = 0;
-			return handVelocity * (1 + pluggedCount * 0.15f)*(2 + Mathf.Abs(diskVelocity - handVelocity)/3);
-		}
-			
-		return _torqueAcc;
+			var count  = Inventory.Instance.PluggedBalls.Count;
+			_torqueEnergy = Mathf.Sign(diffVelocity) * _handModel.PressureCoeff * diffVelocity * diffVelocity / 2f;
+			if (count > 0)
+			{
+				_torqueEnergy *= (1+count*gameConfig.Усил_Коэф_Трения);
+			}
+		}				
 	}
 
-	public void SetHand(Vector3 handPos)
-	{
-        _handPos = new Vector3(handPos.x, handPos.y, this.transform.position.z);
-	    if (_isHandSet)
+    private void OnHandRelease()
+    {
+        if (HandReleased != null)
+        {
+            HandReleased(this, EventArgs.Empty);
+        }
+        _handModel = null;
+        _force.torque = new Vector3();        
+    }
+
+    private bool Raycast(out Vector3 vec3)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(_handModel.GetRay(), out hit,
+            Mathf.Infinity, 1 << LayerMask.NameToLayer("UserInteractive")))
+        {
+            if (hit.collider.gameObject == this.gameObject)
+            {
+                vec3 = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+                return true;
+            }
+        }
+        vec3 = new Vector3();
+        return false;
+    }
+
+    public void SetHand(HandModel handModel)
+    {        
+        _handModel = handModel;
+        if (!Raycast(out _handPos))
+        {
+            OnHandRelease();
             return;
+        }	     
 
-		var pluggedBalls = Inventory.Instance.PluggedBalls;
-		pluggedBalls.ForEach(b => b.Weight = 0f);
-		_rigidBody.angularDrag = 0.15f - pluggedBalls.Count * 0.01f;
-		
-        _isHandSet = true;
-	    if (_boxCollider.enabled)
-	        return;    
+        _handPosPrev = _handPos;
+        _boxCollider.enabled = true;
+        _meshCollider.enabled = false;
+        _torqueEnergy = 0f;
+        _torqueEnergyExtra = _handModel.Momentum;
+    }
 
-		_isAccelartionCouldApply = true;
-		_handPosPrev = _handPos;							
-		_boxCollider.enabled = true;
-		_meshCollider.enabled = false;
-	}
+    private void FixedUpdate()
+    {
+        var fixedDelta = Time.fixedDeltaTime;
+		OnTemperatureProcess(fixedDelta);
 
-	public void RemoveHand(bool release = true)
+        if (_handModel == null)
+			return;
+
+        if (_delta.IsEqual(0))
+            return;     
+
+		var torqueZ = _torqueEnergy * (fixedDelta / _delta);
+		_force.torque = new Vector3(0, 0, torqueZ);                
+    }
+
+	private void OnTemperatureProcess(float delta)
 	{
-	    _force.torque = new Vector3();
-		_torqueAcc = 0f;
-        _isHandSet = false;
+		if (_isBoost)
+			return;
 
-		Inventory.Instance.PluggedBalls.ForEach(b => b.Weight = 0.3f);
-	    if (!release)
-	        return;
+		var timeF = GameConfig.Instance.Время_Нагрева;
+		if (timeF < 9)
+			timeF = 9;
 
-        _timer = 0f;
-        _prevHandVelocity = 0f;
+		var absSpeed = Mathf.Abs(this.AngularSpeed);
+		if (_handModel != null)
+		{
+			var time = timeF - Inventory.Instance.PluggedBalls.Count;
+			var coef = 1/(MaxSpeed*time);
+			_temperature += absSpeed * coef * delta;
+		}
 
-        _boxCollider.enabled = false;
-        _meshCollider.enabled = true;			            
+		var coef2 = 1/(timeF * 2.5f);
+		_temperature -= coef2 * delta;
+		if (_temperature < 0)
+			_temperature = 0;	
 	}
 	  
-	private void Update () 
+	private void Update ()
 	{		
-		_timer = Time.deltaTime;
-		if (!_isHandSet)
-		{			
-            _prevDiskVelocity = this.AngularSpeed;
-			return;
-		}
-		
-		_force.torque = new Vector3(0, 0, CalcForceForTorque() * (this.transform.position - _handPos).magnitude);
-		_handPosPrev = _handPos;
-
-        _prevDiskVelocity = this.AngularSpeed;
-	    _timer = 0f;
+	   	if (_handModel == null)
+	        return;
+       
+		if (_handModel.IsPressed && Raycast(out _handPos))
+        {
+			_delta = Time.deltaTime;
+			CalcForceForTorque();    
+			_handPosPrev = _handPos;
+        }
+		else
+		{
+			OnHandRelease();		
+		}	   	
 	}
 
 	public void Boost()
 	{        
+		_isBoost = true;
+	}
+
+    private void OnConfigChanged(object sender, EventArgs args)
+    {
+        var config = (GameConfig) sender;
+
+        this.MaxSpeed = 0.8f * config.Макс_Угл_Скорость;        
+        this._rigidBody.mass = config.Масса_Диска.MassCorrect();
+		this._maxTemperature = 1f;
+		ChangeAngularDrag(config.Коэф_Трения_Качения);			
+    }	   
+
+	private void ChangeAngularDrag(float angularDrag)
+	{
+		var pluggedCount = Inventory.Instance.PluggedBalls.Count;
+		this._rigidBody.angularDrag = angularDrag * (1 - 0.067f * pluggedCount);
 	}
 
 	private void Start () 
@@ -201,6 +237,14 @@ public class RingDisk : MonoBehaviour
 		_rigidBody = this.GetComponent<Rigidbody>();
 		_meshCollider = this.GetComponent<MeshCollider>();
 		_boxCollider = this.GetComponent<BoxCollider>();
-		_boxCollider.enabled = false;
+		_boxCollider.enabled = false;      
+
+		GameConfig.Changed += OnConfigChanged;
+		OnConfigChanged(GameConfig.Instance, EventArgs.Empty);
+
+		Inventory.Instance.BallPlugged += (obj, args) =>
+		{
+			ChangeAngularDrag(GameConfig.Instance.Коэф_Трения_Качения);
+		};
 	}
 }
