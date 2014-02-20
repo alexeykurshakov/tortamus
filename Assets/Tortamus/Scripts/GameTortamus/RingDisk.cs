@@ -120,7 +120,9 @@ public class RingDisk : MonoBehaviour
             HandReleased(this, EventArgs.Empty);
         }
         _handModel = null;
-        _force.torque = new Vector3();        
+        _force.torque = new Vector3();
+		_boxCollider.enabled = false; 
+		_meshCollider.enabled = true;
     }
 
     private bool Raycast(out Vector3 vec3)

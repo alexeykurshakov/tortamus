@@ -2,36 +2,24 @@
 using System.Reflection;
 using UnityEngine;
 
-public class UIMenu : MonoBehaviour
+public class UIMenu : UIWidget
 {
-	[SerializeField] private GUISkin _skin;
-
 	[SerializeField] private UIProfile _uiProfile;
 
-	private bool _isShown;
-	
-	private void OnGUI()
+	protected override void GUIDraw ()
 	{
-		GUI.skin = _skin;
-
 		if (GUI.Button(new Rect(10, 35, 100, 20), "Меню"))
 		{
-			_isShown = true;
+			IsShown = !IsShown;
+			_uiProfile.Hide ();
 		}
+		
+		if (!IsShown)
+			return;
 
-		if (_isShown)
-		{
-			DrawGUI();		
-		}
-	}
-	
-	private void DrawGUI()
-	{
 		// Lets just quickly set up some GUI layout variables
 		const float panelWidth = 200f;
 		const float panelHeight = 300f;
-		var panelPosX = Screen.width / 2f - panelWidth / 2f;
-		var panelPosY = Screen.height / 2f - panelHeight / 2f;
 		
 		// Draw the box
 		GUILayout.BeginArea(new Rect(10, 60, panelWidth, panelHeight));
@@ -43,53 +31,56 @@ public class UIMenu : MonoBehaviour
 		
 		if (GUILayout.Button("Рестарт"))
 		{
-			_isShown = false;
+			IsShown = false;
 			Application.LoadLevel(Application.loadedLevel);
 		}
-
+		
 		GUILayout.EndHorizontal();
-				
+		
 		GUILayout.BeginHorizontal();
 		
 		if (GUILayout.Button("Профиль"))
 		{
-			_isShown = false;
-			_uiProfile.Show ();
+			IsShown = false;
+			_uiProfile.Show();
 		}
 		
 		GUILayout.EndHorizontal();
-
+		
 		GUILayout.BeginHorizontal();
 		
 		if (GUILayout.Button("По умолчанию"))
 		{
-			_isShown = false;
+			IsShown = false;
 			GameConfig.Default();
 		}
 		
 		GUILayout.EndHorizontal();
-
+		
 		GUILayout.BeginHorizontal();
-
+		
 		if (GUILayout.Button("Отмена"))
 		{
-			_isShown = false;
+			IsShown = false;
 		}
-
+		
 		GUILayout.EndHorizontal();
 
 		GUILayout.BeginHorizontal();
+		GUILayout.BeginVertical();
+		GUILayout.Space(20);
 		
 		if (GUILayout.Button("Выход"))
 		{
-			_isShown = false;
+			IsShown = false;
 			Application.Quit();
 		}
-		
+
+		GUILayout.EndVertical();
 		GUILayout.EndHorizontal();
 		
 		GUILayout.EndArea();
 		GUILayout.EndVertical();
-		GUILayout.EndArea();
+		GUILayout.EndArea();		
 	}
 }

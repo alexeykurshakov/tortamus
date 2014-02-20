@@ -1,8 +1,12 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Tortamus\Scripts\GameTortamus\GameTortamus.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Tortamus\Scripts\GUI\UIWidget.cs">
     <Files>
-      <File FileName="Assets\Tortamus\Scripts\GameTortamus\GameTortamus.cs" Line="12" Column="2" />
+      <File FileName="Assets\Tortamus\Scripts\GUI\UIWidget.cs" Line="34" Column="5" />
+      <File FileName="Assets\Tortamus\Scripts\GUI\UIProfile.cs" Line="53" Column="18" />
+      <File FileName="Assets\Tortamus\Scripts\GUI\UIMenu.cs" Line="14" Column="4" />
+      <File FileName="Assets\Tortamus\Scripts\GUI\UISettings.cs" Line="15" Column="36" />
+      <File FileName="Assets\Tortamus\Scripts\GameTortamus\GameConfig.cs" Line="92" Column="43" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -7,7 +7,7 @@ public class GameConfig
 {
 	public static event EventHandler<EventArgs> Changed;
 
-    const string kPlayerPrefsName = "settings";    
+    const string kPlayerPrefsName = "options";    
 
 	private static int _currentProfile;
 
@@ -19,7 +19,7 @@ public class GameConfig
 	public float Коэф_Трения_Покоя = 2f;
     public float Коэф_Трения_Качения = 0.2f;
     public float Макс_Угл_Скорость = 8f;        
-    public float Уск_Своб_Падения = 1f;
+    public float Уск_Своб_Падения = -1f;
 
     public float Время_Нагрева = 20f;	       
 
@@ -65,7 +65,7 @@ public class GameConfig
 
 	public static void Default()
 	{
-		PlayerPrefs.DeleteKey(string.Format("{0}.profile{1}", kPlayerPrefsName, _currentProfile));
+		PlayerPrefs.DeleteKey(string.Format("{0}profile{1}", kPlayerPrefsName, _currentProfile));
 		PlayerPrefs.Save();
 		_instance = new GameConfig();
 		_instance.OnChanged();
@@ -89,7 +89,7 @@ public class GameConfig
         if (_instance == null)
             return;
 
-		PlayerPrefs.SetString(string.Format("{0}.profile{1}", kPlayerPrefsName, _currentProfile), 
+		PlayerPrefs.SetString(string.Format("{0}profile{1}", kPlayerPrefsName, _currentProfile), 
 		                      JsonWriter.Serialize(_instance));
         PlayerPrefs.Save();   
 		_instance.OnChanged();
