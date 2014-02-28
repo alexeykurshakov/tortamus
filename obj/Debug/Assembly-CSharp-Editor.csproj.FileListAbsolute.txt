@@ -19,3 +19,4 @@ C:\_UnityProjects\Tortamus\Temp\bin\Debug\Assembly-CSharp.pdb
 C:\_UnityProjects\Tortamus\obj\Debug\Assembly-CSharp-Editor.csprojResolveAssemblyReference.cache
 C:\_UnityProjects\Tortamus\obj\Debug\Assembly-CSharp-Editor.dll
 C:\_UnityProjects\Tortamus\obj\Debug\Assembly-CSharp-Editor.pdb
+C:\_UnityProjects\Tortamus\Temp\bin\Debug\JMOAssets.dll
