@@ -21,6 +21,8 @@ public class Inventory : MonoBehaviour
         get { return _balls.FindAll (b => b.IsPlugged); }
     }
 
+	public List<Ball> AllBalls { get { return _balls.ToList(); } }
+
 	private void Awake()
 	{
 		Instance = this;
@@ -35,25 +37,25 @@ public class Inventory : MonoBehaviour
 				continue;
 
             _balls.Add(ball);         
-        }	
+        }
    	}
 
     public bool Touch(GameObject hitObject, HandModel handModel)
     {
         _handModel = handModel;
         var ball = hitObject.GetComponent<Ball>();
-        if (ball.IsPlugged)
+        if (ball.IsPlugged || !ball.IsEnabled)
             return false;
 
         _currentDragBall = ball;
         return true;
     }
 
-	private void OnBallPlugged()
+	private void OnBallPlugged(Ball ball)
 	{
 		if (BallPlugged != null)
 		{
-			BallPlugged(this, EventArgs.Empty);
+			BallPlugged(ball, EventArgs.Empty);
 		}
 	}
 
@@ -73,7 +75,7 @@ public class Inventory : MonoBehaviour
                 if (outlet.IsFree)
                 {
                     _currentDragBall.PlugIn(outlet);
-					OnBallPlugged();
+					OnBallPlugged(_currentDragBall);
                 }
                 else
                 {

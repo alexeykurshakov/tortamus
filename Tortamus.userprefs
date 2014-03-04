@@ -1,14 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Tortamus\Scripts\GameStates\Tortamus\GameTortamus.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Tortamus\Scripts\GameStates\Tortamus\Level02\Level2.cs">
     <Files>
-      <File FileName="Assets\Tortamus\Scripts\GameStates\GameStates.cs" Line="1" Column="1" />
-      <File FileName="Assets\Tortamus\Scripts\GameStates\GameState.cs" Line="1" Column="1" />
-      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\GameTortamus.cs" Line="61" Column="4" />
-      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\Ball.cs" Line="1" Column="1" />
-      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\RingDisk.cs" Line="1" Column="1" />
-      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\HandModel.cs" Line="1" Column="1" />
-      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\Inventory.cs" Line="1" Column="1" />
+      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\Ball.cs" Line="198" Column="29" />
+      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\Inventory.cs" Line="88" Column="37" />
+      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\Level02\Level2.cs" Line="115" Column="20" />
+      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\Level01\Level1.cs" Line="29" Column="13" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

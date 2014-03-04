@@ -1,8 +1,5 @@
 fileFormatVersion: 2
-guid: 0d68bdb36c54ad1469415b3d4cb9b56d
-labels:
-- concrete
-- architecture
+guid: 14a8033d90b9e1c40ae87c93fab84be1
 SubstanceImporter:
   serializedVersion: 5
   materialInstances:
@@ -11,6 +8,13 @@ SubstanceImporter:
     prototypeName: concrete_001
     shaderName: Bumped Specular
     inputs:
+    - name: Concrete_Color
+      value:
+        scalar[0]: .941176474
+        scalar[1]: .533587873
+        scalar[2]: .0968857929
+        scalar[3]: 0
+        texture: {instanceID: 0}
     - name: $normalformat
       value:
         scalar[0]: 0
@@ -32,13 +36,6 @@ SubstanceImporter:
         scalar[2]: 0
         scalar[3]: 0
         texture: {instanceID: 0}
-    - name: Concrete_Color
-      value:
-        scalar[0]: .661764741
-        scalar[1]: .257893622
-        scalar[2]: .36652112
-        scalar[3]: 0
-        texture: {instanceID: 0}
     - name: Dirtiness
       value:
         scalar[0]: 0
@@ -55,9 +52,9 @@ SubstanceImporter:
         texture: {instanceID: 0}
     - name: Dirtiness_2_Color
       value:
-        scalar[0]: .0330882221
-        scalar[1]: .510520935
-        scalar[2]: .75
+        scalar[0]: .454899997
+        scalar[1]: .486200005
+        scalar[2]: .501900017
         scalar[3]: 0
         texture: {instanceID: 0}
     - name: Dirtiness_3_Color
@@ -69,7 +66,7 @@ SubstanceImporter:
         texture: {instanceID: 0}
     - name: Light_Angle
       value:
-        scalar[0]: .850000024
+        scalar[0]: .125
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
@@ -83,14 +80,14 @@ SubstanceImporter:
         texture: {instanceID: 0}
     - name: Peeling
       value:
-        scalar[0]: .335000008
+        scalar[0]: 0
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
         texture: {instanceID: 0}
     - name: Depth
       value:
-        scalar[0]: .579999983
+        scalar[0]: 0
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
@@ -104,14 +101,14 @@ SubstanceImporter:
         texture: {instanceID: 0}
     - name: Normal
       value:
-        scalar[0]: .703999996
+        scalar[0]: .5
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
         texture: {instanceID: 0}
     - name: Emboss
       value:
-        scalar[0]: .883000016
+        scalar[0]: .5
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
@@ -132,14 +129,14 @@ SubstanceImporter:
         texture: {instanceID: 0}
     - name: Luminosity
       value:
-        scalar[0]: .5
+        scalar[0]: .629000008
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
         texture: {instanceID: 0}
     - name: Contrast
       value:
-        scalar[0]: 0
+        scalar[0]: .0799999982
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
@@ -148,8 +145,8 @@ SubstanceImporter:
       serializedVersion: 5
       offset: {x: 0, y: 0}
       scale: {x: 1, y: 1}
-      generateAllOutputs: 1
-      animationUpdateRate: 42
+      generateAllOutputs: 0
+      animationUpdateRate: 0
     materialProperties:
       serializedVersion: 2
       texEnvs:
@@ -176,7 +173,7 @@ SubstanceImporter:
         data:
           first:
             name: _Color
-          second: {r: 1, g: 1, b: 1, a: 1}
+          second: {r: 0, g: .83448267, b: 1, a: 1}
         data:
           first:
             name: _SpecColor
@@ -193,21 +190,6 @@ SubstanceImporter:
       aniso: 1
       wrapMode: 0
     - name: concrete_001_Normal
-      alphaSource: 0
-      filterMode: 1
-      aniso: 1
-      wrapMode: 0
-    - name: concrete_001_Bump
-      alphaSource: 0
-      filterMode: 1
-      aniso: 1
-      wrapMode: 0
-    - name: concrete_001_Displacement
-      alphaSource: 0
-      filterMode: 1
-      aniso: 1
-      wrapMode: 0
-    - name: concrete_001_Height
       alphaSource: 0
       filterMode: 1
       aniso: 1

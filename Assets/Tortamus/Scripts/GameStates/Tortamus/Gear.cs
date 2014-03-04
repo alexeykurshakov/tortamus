@@ -61,6 +61,6 @@ public class Gear : MonoBehaviour
 
 	private void Start()
 	{
-		Init();
+		Init();	
 	}
 }

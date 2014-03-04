@@ -4,6 +4,7 @@ using System.Collections;
 public class StaffManager : MonoBehaviour
 {
     [SerializeField] private Camera _mainCamera;
+	public Camera MainCamera { get { return _mainCamera; } }
 
     [SerializeField] private Transform _levelsRoot;
 

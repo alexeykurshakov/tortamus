@@ -149,11 +149,12 @@
      <Compile Include="Assets\Tortamus\Scripts\GameStates\Tortamus\Ball.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameStates\Tortamus\BallOutlet.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameStates\Tortamus\GameConfig.cs" />
-     <Compile Include="Assets\Tortamus\Scripts\GameStates\Tortamus\GameTortamus.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameStates\Tortamus\Gear.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameStates\Tortamus\HandModel.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameStates\Tortamus\InstrumentScale.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameStates\Tortamus\Inventory.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\GameStates\Tortamus\Level01\Level1.cs" />
+     <Compile Include="Assets\Tortamus\Scripts\GameStates\Tortamus\Level02\Level2.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameStates\Tortamus\PushButton.cs" />
      <Compile Include="Assets\Tortamus\Scripts\GameStates\Tortamus\RingDisk.cs" />
      <Compile Include="Assets\Tortamus\Scripts\Helpers\FloatHelper.cs" />

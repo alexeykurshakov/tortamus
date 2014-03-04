@@ -30,6 +30,8 @@ public class PushButton : MonoBehaviour
 				renderer.material.SetColor("_Color", _activeMainColor);
 				this.gameObject.SetActive(true);
 				this.transform.localScale = new Vector3(0, 1, 0);
+
+				SoundManager.Instance.GetSound(SoundManager.Sounds.ButtonOnActive).Play();
 			}
 
 		}

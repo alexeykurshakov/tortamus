@@ -1,6 +1,6 @@
 ﻿
 public enum GameStates
 {
-    Tortamus01,
-    Tortamus02
+    Level1,
+    Level2
 }

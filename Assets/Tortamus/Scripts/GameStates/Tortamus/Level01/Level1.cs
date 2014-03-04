@@ -4,12 +4,9 @@ using System.Runtime.Remoting;
 using UnityEngine;
 using System.Collections;
 
-public class GameTortamus : GameState
+public class Level1 : GameState
 {
-    public override GameStates State 
-    {
-        get { return GameStates.Tortamus01;}
-    }
+    public override GameStates State { get { return GameStates.Level1;} }
 
 	[SerializeField] private ParticleSystem _leftPS;
 
@@ -51,7 +48,7 @@ public class GameTortamus : GameState
 		var delta = Time.deltaTime;
         _instrumentScale.Speed0_100 = _ringDisk.Speed0_100;
 		_instrumentScale.Temp0_100 = _ringDisk.Temp0_100;
-
+        
 		if (_instrumentScale.Speed0_100 > 10 || _currentState == States.DiskRotate)
 		{
 			var speedScaleCoeff = (_instrumentScale.Speed0_100/100f);
@@ -93,6 +90,7 @@ public class GameTortamus : GameState
                 break;
 
             case States.Cinematic:
+                CinematicProcess(delta);
                 return;
         }
 		
@@ -101,6 +99,18 @@ public class GameTortamus : GameState
 		{
             _pushButton.IsActive = true;		
 		}			
+    }
+
+    private float _cinematicTimer = 0f;
+    private void CinematicProcess(float delta)
+    {
+        _cinematicTimer += delta;
+        if (_cinematicTimer > 2f)
+        {
+            var stateManager = StateManager.Instance;
+            if (!stateManager.IsBusy)
+                stateManager.SwitchState(GameStates.Level2);
+        }
     }
 
 	private void WaitForInputProcess()
@@ -150,7 +160,12 @@ public class GameTortamus : GameState
 
     private void Start()
     {
-        _ringDisk.HandReleased += (sender, args) => this.CurrentState = States.WaitForInput;
-    }
+        _ringDisk.HandReleased += (sender, args) => this.CurrentState = States.WaitForInput;	
+
+		_inventory.AllBalls.ForEach(b => b.IsEnabled = true);	
+
+		_leftPS.enableEmission = false;
+		_rihgPS.enableEmission = false;
+   	}
 }
  

@@ -7,6 +7,10 @@ public class RingDisk : MonoBehaviour
 {
     public event EventHandler<EventArgs> HandReleased;
 
+	private readonly int[] kTempColors = {0,234,255,0,255,139,0,255,97,62,255,0,146,255,0,220,255,0,255,227,0,255,206,0,255,198,0,255,190,0};
+
+	private const float kVelocityConvertCoeff = 360f/Mathf.PI;
+
     private float _maxTemperature;
 
     private float _temperature;
@@ -42,9 +46,7 @@ public class RingDisk : MonoBehaviour
 
     private float _delta;
 
-    private float _torqueEnergy;
-
-    private float _torqueEnergyExtra; 
+    private float _torqueEnergy;	   
 
     private Vector3 _handPosPrev;
 
@@ -57,18 +59,31 @@ public class RingDisk : MonoBehaviour
 
 	private void PassiveDeceleration()
 	{
+		var angularVelocity = this.AngularSpeed;
+		
 		// 1. If speed of the disk is low, return 0
-		if (_rigidBody.angularVelocity.z.IsEqual(0, 0.001f))
+		if (angularVelocity.IsEqual(0, 0.001f))
 		{
 			_torqueEnergy = 0f;
+			StopScreamSound();
 			return;
 		}
 
 		// 2. Otherwise return opposite sign to angular speed force		
-		_torqueEnergy = GameConfig.Instance.Коэф_Трения_Покоя * (_rigidBody.angularVelocity.z > 0 ? -1 : 1);
+		_torqueEnergy = GameConfig.Instance.Коэф_Трения_Покоя * (angularVelocity > 0 ? -1 : 1);
+
+		var stopSound = SoundManager.Instance.GetSound(SoundManager.Sounds.DiskStopScream);
+		stopSound.volume = Speed0_100/100f;
+		if (!stopSound.isPlaying)
+			stopSound.Play();	
 	}
 
-	private const float kVelocityConvertCoeff = 360f/Mathf.PI;
+	private void StopScreamSound()
+	{
+		var stopSound = SoundManager.Instance.GetSound(SoundManager.Sounds.DiskStopScream);
+		if (stopSound.isPlaying)
+			stopSound.Stop ();
+	}
 	
 	private void CalcForceForTorque()
 	{
@@ -80,6 +95,10 @@ public class RingDisk : MonoBehaviour
 	        PassiveDeceleration();
 	        return;
 	    }
+		else
+		{
+			StopScreamSound();
+		}
 
 	    var v1 = this.transform.position - _handPos;
 		var v2 = this.transform.position - _handPosPrev;
@@ -105,7 +124,7 @@ public class RingDisk : MonoBehaviour
 		else
 		{
 			var count  = Inventory.Instance.PluggedBalls.Count;
-			_torqueEnergy = Mathf.Sign(diffVelocity) * _handModel.PressureCoeff * diffVelocity * diffVelocity / 2f;
+			_torqueEnergy = Mathf.Sign(diffVelocity) * diffVelocity * diffVelocity / 2f;
 			if (count > 0)
 			{
 				_torqueEnergy *= (1+count*gameConfig.Усил_Коэф_Трения);
@@ -123,6 +142,7 @@ public class RingDisk : MonoBehaviour
         _force.torque = new Vector3();
 		_boxCollider.enabled = false; 
 		_meshCollider.enabled = true;
+		StopScreamSound();
     }
 
     private bool Raycast(out Vector3 vec3)
@@ -153,8 +173,7 @@ public class RingDisk : MonoBehaviour
         _handPosPrev = _handPos;
         _boxCollider.enabled = true;
         _meshCollider.enabled = false;
-        _torqueEnergy = 0f;
-        _torqueEnergyExtra = _handModel.Momentum;
+        _torqueEnergy = 0f;        
     }
 
     private void FixedUpdate()
@@ -175,8 +194,9 @@ public class RingDisk : MonoBehaviour
 	private void OnTemperatureProcess(float delta)
 	{
 		if (_isBoost)
-			return;
+			return;	
 
+		var pluggedBalls = Inventory.Instance.PluggedBalls;
 		var timeF = GameConfig.Instance.Время_Нагрева;
 		if (timeF < 9)
 			timeF = 9;
@@ -184,7 +204,7 @@ public class RingDisk : MonoBehaviour
 		var absSpeed = Mathf.Abs(this.AngularSpeed);
 		if (_handModel != null)
 		{
-			var time = timeF - Inventory.Instance.PluggedBalls.Count;
+			var time = timeF - pluggedBalls.Count;
 			var coef = 1/(MaxSpeed*time);
 			_temperature += absSpeed * coef * delta;
 		}
@@ -193,11 +213,54 @@ public class RingDisk : MonoBehaviour
 		_temperature -= coef2 * delta;
 		if (_temperature < 0)
 			_temperature = 0;	
+
+		var temp100 = Temp0_100;
+		foreach (var ball in pluggedBalls)
+		{
+			ball.TemperatureColor = temp100;
+		}
+
+		var colorIndex = 3*(temp100/10);
+		var color = new Color(kTempColors[colorIndex+0]/255f, kTempColors[colorIndex+1]/255f, kTempColors[colorIndex+2]/255f);
+		renderer.material.SetColor("_Color", color);
+	}
+
+	private void OnSoundsProcess()
+	{
+		var speed0_100 = this.Speed0_100;
+		
+		var diskRotateSound = SoundManager.Instance.GetSound(SoundManager.Sounds.DiskRotate);
+		if (speed0_100 > 3)
+		{
+			if (!diskRotateSound.isPlaying)
+			{
+				diskRotateSound.Play();
+			}
+			
+			var speedCoeff = speed0_100/100f;
+			diskRotateSound.pitch = 0.1f + 1.2f * speedCoeff; 
+			diskRotateSound.volume = speedCoeff;
+		}
+		else if (diskRotateSound.isPlaying)
+		{
+			diskRotateSound.Stop();
+		}
+
+		var gearSound = SoundManager.Instance.GetSound(_isBoost ? SoundManager.Sounds.GearsWinRotate : SoundManager.Sounds.GearRotate);
+		if (speed0_100 > 0)
+		{
+			if (!gearSound.isPlaying)
+				gearSound.Play();
+		}
+		else if (gearSound.isPlaying)
+		{
+			gearSound.Pause();
+		}	
 	}
 	  
 	private void Update ()
-	{		
-		//this.gameObject.renderer.material.color;
+	{	
+		OnSoundsProcess();
 
 	   	if (_handModel == null)
 	        return;
@@ -236,7 +299,7 @@ public class RingDisk : MonoBehaviour
 	}
 
 	private void Start () 
-	{
+	{	
 		_force = this.GetComponent<ConstantForce>();
 		_rigidBody = this.GetComponent<Rigidbody>();
 		_meshCollider = this.GetComponent<MeshCollider>();
@@ -250,5 +313,11 @@ public class RingDisk : MonoBehaviour
 		{
 			ChangeAngularDrag(GameConfig.Instance.Коэф_Трения_Качения);
 		};
+
+		var gearRotateSound = SoundManager.Instance.GetSound(SoundManager.Sounds.GearRotate);
+		gearRotateSound.loop = true;
+		gearRotateSound.volume = 0.2f;
+
+		SoundManager.Instance.GetSound(SoundManager.Sounds.DiskStopScream).loop = true;
 	}
 }
