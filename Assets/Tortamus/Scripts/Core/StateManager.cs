@@ -46,13 +46,14 @@ public class StateManager : MonoBehaviour
 		var delta = Time.deltaTime;
 		var cameraTransform = _staff.MainCamera.transform;
 		var currentPos = cameraTransform.localPosition.x;
-		currentPos += 2 * delta;
+		currentPos += 4 * delta;
 		if (currentPos >= kCameraPos2)
 		{
 			currentPos = kCameraPos2;
 			SoundManager.Instance.StopAll();
 			SoundManager.Instance.IsSoundEnabled = true;
 			IsBusy = false;
+			_level1.SetActive(false);
 		}
 		cameraTransform.localPosition = new Vector3(currentPos, cameraTransform.localPosition.y, cameraTransform.localPosition.z); 
 		SoundManager.Instance.transform.localPosition = cameraTransform.localPosition;

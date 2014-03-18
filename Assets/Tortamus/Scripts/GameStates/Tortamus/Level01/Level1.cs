@@ -47,17 +47,16 @@ public class Level1 : GameState
     {			
 		var delta = Time.deltaTime;
         _instrumentScale.Speed0_100 = _ringDisk.Speed0_100;
-		_instrumentScale.Temp0_100 = _ringDisk.Temp0_100;
         
 		if (_instrumentScale.Speed0_100 > 10 || _currentState == States.DiskRotate)
 		{
 			var speedScaleCoeff = (_instrumentScale.Speed0_100/100f);
-			var emitRate = 20 + speedScaleCoeff * 400;
+			var emitRate = 20 + speedScaleCoeff * 1200;
 			_leftPS.emissionRate = emitRate;
 			_rihgPS.emissionRate = emitRate;
 
-			_leftPS.startSpeed = speedScaleCoeff * 2f;
-			_rihgPS.startSpeed = speedScaleCoeff * 2f;
+			_leftPS.startSpeed = speedScaleCoeff * 1f;
+			_rihgPS.startSpeed = speedScaleCoeff * 1f;
 
 			if (!_leftPS.enableEmission)
 			{
@@ -109,7 +108,10 @@ public class Level1 : GameState
         {
             var stateManager = StateManager.Instance;
             if (!stateManager.IsBusy)
+			{
+				_mainGear.HideLinks();
                 stateManager.SwitchState(GameStates.Level2);
+			}
         }
     }
 

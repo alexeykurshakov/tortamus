@@ -23,6 +23,11 @@ public class Gear : MonoBehaviour
         });
     }
 
+	public void HideLinks()
+	{
+		_links.ForEach(g => g.gameObject.SetActive(false));
+	}
+
 	public float AngularSpeed
 	{
 		get

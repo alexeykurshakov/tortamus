@@ -53,7 +53,6 @@ public class Level2 : GameState
 
 		var delta = Time.deltaTime;
         _instrumentScale.Speed0_100 = _ringDisk.Speed0_100;
-		_instrumentScale.Temp0_100 = _ringDisk.Temp0_100;
 
 		if (_instrumentScale.Speed0_100 > 10 || _currentState == States.DiskRotate)
 		{
@@ -107,22 +106,20 @@ public class Level2 : GameState
 		}			
     }
 
-	private float _rotateTimer = 0f;
+	private float _rotateAngles = 0f;
 	private void DiskRotateProcess(float delta)
 	{
-		if ((_rotateTimer += delta) >= 1f)
+		_rotateAngles += Mathf.Abs(_ringDisk.AngularSpeed * delta);
+		if (_rotateAngles > 3.14 * 3)
 		{
-			if (_ringDisk.Speed0_100 > 30)
-			{
-				var allBalls = _inventory.AllBalls;
-			    if (allBalls.Any(b => b.IsEnabled))
-			        return;
-
-			    var restDisabledBalls = _inventory.AllBalls.FindAll(b => !b.IsEnabled);
-			    var index = UnityEngine.Random.Range(0, restDisabledBalls.Count);
-			    restDisabledBalls[index].IsEnabled = true;
-                restDisabledBalls[index].DoCastling(_ballSelectEffect);
-			}
+			var allBalls = _inventory.AllBalls;
+			if (allBalls.Any(b => b.IsEnabled))
+				return;
+			
+			var restDisabledBalls = _inventory.AllBalls.FindAll(b => !b.IsEnabled);
+			var index = UnityEngine.Random.Range(0, restDisabledBalls.Count);
+			restDisabledBalls[index].IsEnabled = true;
+			restDisabledBalls[index].DoCastling(_ballSelectEffect);
 		}
 	}
 
@@ -175,7 +172,7 @@ public class Level2 : GameState
     {
 		_ringDisk.HandReleased += (sender, args) => 
 		{
-			_rotateTimer = 0f;
+			_rotateAngles = 0f;
 			this.CurrentState = States.WaitForInput;
 		};
 				

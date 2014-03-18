@@ -1,11 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Tortamus\Scripts\GameStates\Tortamus\Level02\Level2.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Tortamus\Scripts\GameStates\Tortamus\Level01\Level1.cs">
     <Files>
-      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\Ball.cs" Line="198" Column="29" />
-      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\Inventory.cs" Line="88" Column="37" />
-      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\Level02\Level2.cs" Line="115" Column="20" />
-      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\Level01\Level1.cs" Line="29" Column="13" />
+      <File FileName="Assets\Tortamus\Scripts\Core\StaffManager.cs" Line="14" Column="6" />
+      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\Level01\Level1.cs" Line="59" Column="44" />
+      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\Level02\Level2.cs" Line="120" Column="31" />
+      <File FileName="Assets\Tortamus\Scripts\Core\StateManager.cs" Line="53" Column="36" />
+      <File FileName="Assets\Tortamus\Scripts\GameStates\Tortamus\Gear.cs" Line="21" Column="27" />
+      <File FileName="Assets\Tortamus\Scripts\Core\SoundManager.cs" Line="34" Column="40" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
